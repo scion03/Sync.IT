@@ -136,7 +136,7 @@ let streamObj;
 let audioTracks = [];
 navigator.mediaDevices
 	.getUserMedia({
-		audio: true,
+		video: true,
 	})
 	.then((stream) => {
 		streamObj = stream;
