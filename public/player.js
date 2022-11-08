@@ -20,7 +20,7 @@ const vidgrid = document.getElementById('vidgrid')
 const myvid = document.createElement('video')
 navigator.mediaDevices.getUserMedia({
 	video: true,
-	audio: false
+	audio: true
 }).then(stream => {
 	myvidS = stream;
 	addVidS(myvid, stream);
@@ -43,7 +43,11 @@ navigator.mediaDevices.getUserMedia({
 peer.on('open', id => {
 	socket.emit('join-room', roomno, id);//calls that socket.on func from server.js
 })
-
+let myPeerId;
+peer.on("open", (id) => {
+	myPeerId = id;
+});
+const peers = {};
 connectNewuser = (userid, stream) => {
 	console.log("new user connected!", userid)
 	//calling the newly connected user!
@@ -52,10 +56,10 @@ connectNewuser = (userid, stream) => {
 	call.on('stream', userVideoStream => {
 		addVidS(video, userVideoStream)
 	})
-	// call.on('close', () => {
-	//   video.remove();
-	// });
-	// peers[userid] = call;
+	call.on('close', () => {
+	  video.remove();
+	});
+	peers[userid] = call;
 
 }
 
@@ -69,10 +73,56 @@ addVidS = (video, stream) => {
 } // a func to add a vid stream
 
 
+function muteToggle() {
+		const enabled = myvidS.getAudioTracks()[0].enabled;
+		if (enabled) {
+			myvidS.getAudioTracks()[0].enabled = false;
+			setUnmuteButton();
+		} else {
+			setMuteButton();
+			myvidS.getAudioTracks()[0].enabled = true;
+		}
+	}
 
+function speakerToggle() {
+		console.log('object')
+		let enabled = myvidS.getVideoTracks()[0].enabled;
+		if (enabled) {
+			myvidS.getVideoTracks()[0].enabled = false;
+			setPlayVideo()
+		} else {
+			setStopVideo()
+			myvidS.getVideoTracks()[0].enabled = true;
+		}
+	}
+const setMuteButton = () => {
+	const html = `
+    <i class="fas fa-microphone"></i>
+    <span>Mute</span> `
+	document.querySelector('.main_mute_button').innerHTML = html;
+}
 
+const setUnmuteButton = () => {
+	const html = `
+    <i class="unmute fas fa-microphone-slash"></i>
+    <span>Unmute</span> `
+	document.querySelector('.main_mute_button').innerHTML = html;
+}
 
+const setStopVideo = () => {
+	const html = `
+    <i class="fas fa-video"></i>
+    <span>Stop Video</span> `
+	document.querySelector('.main_video_button').innerHTML = html;
+}
 
+const setPlayVideo = () => {
+	const html = `
+  <i class="stop fas fa-video-slash"></i>
+    <span>Play Video</span>
+  `
+	document.querySelector('.main_video_button').innerHTML = html;
+}
 //...............................
 
 let curr_socketId;
@@ -95,11 +145,7 @@ socket.on("connect", () => {
 });
 
 /* peer connection for audio chat */
-let myPeerId;
-peer.on("open", (id) => {
-	myPeerId = id;
-});
-const peers = {};
+
 
 //Confirming on leaving/reloading the page
 window.onbeforeunload = () => {
@@ -132,83 +178,58 @@ socket.on("enter room", (isAllowed) => {
 	else window.location.href = "/";
 });
 
-let streamObj;
-let audioTracks = [];
-navigator.mediaDevices
-	.getUserMedia({
-		audio: true,
-	})
-	.then((stream) => {
-		streamObj = stream;
-		peer.on("call", (call) => {
-			call.answer(stream);
-			const newAudio = document.createElement("audio");
-			call.on("stream", (userAudioStream) => {
-				addAudioStream(newAudio, userAudioStream);
-			});
-		});
+//audio
+// let streamObj;
+// let audioTracks = [];
+// navigator.mediaDevices
+// 	.getUserMedia({
+// 		audio: true,
+// 	})
+// 	.then((stream) => {
+// 		streamObj = stream;
+// 		peer.on("call", (call) => {
+	// 		call.answer(stream);
+	// 		const newAudio = document.createElement("audio");
+	// 		call.on("stream", (userAudioStream) => {
+	// 			addAudioStream(newAudio, userAudioStream);
+	// 		});
+	// 	});
 
-		//Notification on new user entry and add audio stream
-		socket.on("new user", (username, peerId) => {
-			// notifJoin.play();
-			toastUserAddRemove(username, "joined");
-			console.log(peerId);
-			connectToNewUser(peerId, stream);
-		});
-	});
+	// 	//Notification on new user entry and add audio stream
+	// 	socket.on("new user", (username, peerId) => {
+	// 		// notifJoin.play();
+	// 		toastUserAddRemove(username, "joined");
+	// 		console.log(peerId);
+	// 		connectToNewUser(peerId, stream);
+	// 	});
+	// });
 
-function connectToNewUser(userId, stream) {
-	const call = peer.call(userId, stream);
-	const audio = document.createElement("audio");
-	call.on("stream", (userAudioStream) => {
-		addAudioStream(audio, userAudioStream);
-	});
-	call.on("close", () => {
-		audio.remove();
-	});
+// function connectToNewUser(userId, stream) {
+// 	const call = peer.call(userId, stream);
+// 	const audio = document.createElement("audio");
+// 	call.on("stream", (userAudioStream) => {
+// 		addAudioStream(audio, userAudioStream);
+// 	});
+// 	call.on("close", () => {
+// 		audio.remove();
+// 	});
 
-	peers[userId] = call;
-}
+// 	peers[userId] = call;
+// }
 
-function addAudioStream(audio, stream) {
-	audio.srcObject = stream;
-	audio.addEventListener("loadedmetadata", () => {
-		audio.play();
-		audio.muted = !isSpeakerOn;
-	});
-	audioTracks.push(audio);
-}
+// function addAudioStream(audio, stream) {
+// 	audio.srcObject = stream;
+// 	audio.addEventListener("loadedmetadata", () => {
+// 		audio.play();
+// 		audio.muted = !isSpeakerOn;
+// 	});
+// 	audioTracks.push(audio);
+// }
 
 
-const muteIcon = muteButton.childNodes[1];
-function muteToggle() {
-	streamObj.getAudioTracks()[0].enabled ^= 1;
-	if (streamObj.getAudioTracks()[0].enabled) {
-		muteButton.style.backgroundColor = "#181a1b";
-		muteIcon.classList.remove("fa-microphone-slash");
-		muteIcon.classList.add("fa-microphone");
-	} else {
-		muteButton.style.backgroundColor = "red";
-		muteIcon.classList.remove("fa-microphone");
-		muteIcon.classList.add("fa-microphone-slash");
-	}
-}
 
-const speakerIcon = speakerButton.childNodes[1];
-let isSpeakerOn = true;
-function speakerToggle() {
-	isSpeakerOn = !isSpeakerOn;
-	audioTracks.map((audio) => (audio.muted = !isSpeakerOn));
-	if (!isSpeakerOn) {
-		speakerButton.style.backgroundColor = "red";
-		speakerIcon.classList.remove("fa-volume-up");
-		speakerIcon.classList.add("fa-volume-off");
-	} else {
-		speakerButton.style.backgroundColor = "#181a1b";
-		speakerIcon.classList.remove("fa-volume-off");
-		speakerIcon.classList.add("fa-volume-up");
-	}
-}
+
+
 
 // Array to hold the pending permission of user to enter the room
 askingPermissionUsers = [];
@@ -481,6 +502,7 @@ function chatToggle() {
 		videoCol.classList.remove("col-md-12");
 		videoCol.classList.add("col-md-8");
 	} else {
+		chatButton.style.backgroundColor = "rgb(25,127,127)";
 		videoCol.classList.remove("col-md-8");
 		videoCol.classList.add("col-md-12");
 		chatCol.setAttribute("hidden", "hidden");
