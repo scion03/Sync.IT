@@ -82,21 +82,21 @@ socket.on("enter room", (isAllowed) => {
 // 	.then((stream) => {
 // 		streamObj = stream;
 // 		peer.on("call", (call) => {
-	// 		call.answer(stream);
-	// 		const newAudio = document.createElement("audio");
-	// 		call.on("stream", (userAudioStream) => {
-	// 			addAudioStream(newAudio, userAudioStream);
-	// 		});
-	// 	});
+// 		call.answer(stream);
+// 		const newAudio = document.createElement("audio");
+// 		call.on("stream", (userAudioStream) => {
+// 			addAudioStream(newAudio, userAudioStream);
+// 		});
+// 	});
 
-	// 	//Notification on new user entry and add audio stream
-	// 	socket.on("new user", (username, peerId) => {
-	// 		// notifJoin.play();
-	// 		toastUserAddRemove(username, "joined");
-	// 		console.log(peerId);
-	// 		connectToNewUser(peerId, stream);
-	// 	});
-	// });
+// 	//Notification on new user entry and add audio stream
+// 	socket.on("new user", (username, peerId) => {
+// 		// notifJoin.play();
+// 		toastUserAddRemove(username, "joined");
+// 		console.log(peerId);
+// 		connectToNewUser(peerId, stream);
+// 	});
+// });
 
 // function connectToNewUser(userId, stream) {
 // 	const call = peer.call(userId, stream);
@@ -496,6 +496,7 @@ connectNewuser = (userid, stream) => {
 	call.on('close', () => {
 		video.remove();
 	});
+
 	peers[userid] = call;
 
 }
