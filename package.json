@@ -1,0 +1,26 @@
+{
+	"name": "socket-player",
+	"version": "1.0.0",
+	"description": "",
+	"main": "app.js",
+	"scripts": {
+		"dev": "fuser -k 5000/tcp & nodemon server.js",
+		"start": "node server.js",
+		"logs": "heroku logs -t --app savy-player",
+		"restart": "heroku restart --app savy-player",
+		"app-logs": "heroku logs -t --app savy-player --source app",
+		"check-env-var": "heroku config --app savy-player"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
+		"express": "^4.18.2",
+		"mediaserver": "^0.1.1",
+		"nanoid": "^3.1.20",
+		"nodemon": "^2.0.20",
+		"peer": "^0.6.1",
+		"socket.io": "^2.4.1"
+	}
+}
