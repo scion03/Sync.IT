@@ -49,7 +49,7 @@ const isAuthenticated = (req, res, next) => {
 	if (roomno == undefined)
 		return res.sendFile(join(__dirname, "public", "roomInvalid.html"));
 
-	// Checking authentication for roomno
+	// Checking authenticatiomen for roomno
 	if (!rooms.hasOwnProperty(roomno)) {
 		return res.sendFile(join(__dirname, "public", "roomInvalid.html"));
 	}

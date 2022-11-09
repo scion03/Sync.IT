@@ -2,7 +2,7 @@
 var peer = new Peer(undefined, {
 	path: '/peerjs',
 	host: '/',
-	port: '443'
+	port: '30000'
 });
 
 // const notifChat = document.getElementById("notif_chat");
