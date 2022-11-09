@@ -455,6 +455,7 @@ document.onkeypress = function (e) {
 };
 const vidgrid = document.getElementById('vidgrid')
 const myvid = document.createElement('video')
+myvid.muted = true;
 navigator.mediaDevices.getUserMedia({
 	video: true,
 	audio: true
