@@ -453,112 +453,113 @@ document.onkeypress = function (e) {
 		sendMessageButton.onclick();
 	}
 };
-const vidgrid = document.getElementById('vidgrid')
-const myvid = document.createElement('video')
-myvid.muted = true;
-navigator.mediaDevices.getUserMedia({
-	video: true,
-	audio: true
-}).then(stream => {
-	myvidS = stream;
-	addVidS(myvid, stream);
 
-	peer.on('call', function (call) {
-		// Answer the call, providing our mediaStream
-		call.answer(stream);
-		const video = document.createElement('video')
-		call.on('stream', userVideoStream => {
-			addVidS(video, userVideoStream)
-		})
-	});
-	//oops
-	socket.on('user-connected', (userid) => {
-		connectNewuser(userid, stream);
-	})
-})
-//oops
+// const vidgrid = document.getElementById('vidgrid')
+// const myvid = document.createElement('video')
+// myvid.muted = true;
+// navigator.mediaDevices.getUserMedia({
+// 	video: true,
+// 	audio: true
+// }).then(stream => {
+// 	myvidS = stream;
+// 	addVidS(myvid, stream);
 
-peer.on('open', id => {
-	socket.emit('join-room', roomno, id);//calls that socket.on func from server.js
-})
-let myPeerId;
-peer.on("open", (id) => {
-	myPeerId = id;
-});
-const peers = {};
-connectNewuser = (userid, stream) => {
-	console.log("new user connected!", userid)
-	//calling the newly connected user!
-	const call = peer.call(userid, stream) //calls the connected user
-	const video = document.createElement('video')
-	call.on('stream', userVideoStream => {
-		addVidS(video, userVideoStream)
-	})
-	call.on('close', () => {
-		video.remove();
-	});
+// 	peer.on('call', function (call) {
+// 		// Answer the call, providing our mediaStream
+// 		call.answer(stream);
+// 		const video = document.createElement('video')
+// 		call.on('stream', userVideoStream => {
+// 			addVidS(video, userVideoStream)
+// 		})
+// 	});
+// 	//oops
+// 	socket.on('user-connected', (userid) => {
+// 		connectNewuser(userid, stream);
+// 	})
+// })
+// //oops
 
-	peers[userid] = call;
+// peer.on('open', id => {
+// 	socket.emit('join-room', roomno, id);//calls that socket.on func from server.js
+// })
+// let myPeerId;
+// peer.on("open", (id) => {
+// 	myPeerId = id;
+// });
+// const peers = {};
+// connectNewuser = (userid, stream) => {
+// 	console.log("new user connected!", userid)
+// 	//calling the newly connected user!
+// 	const call = peer.call(userid, stream) //calls the connected user
+// 	const video = document.createElement('video')
+// 	call.on('stream', userVideoStream => {
+// 		addVidS(video, userVideoStream)
+// 	})
+// 	call.on('close', () => {
+// 		video.remove();
+// 	});
 
-}
+// 	peers[userid] = call;
 
-addVidS = (video, stream) => {
-	video.srcObject = stream;
-	video.addEventListener('loadedmetadata', () => {
-		video.play();
-	})
-	vidgrid.append(video)
+// }
 
-} // a func to add a vid stream
+// addVidS = (video, stream) => {
+// 	video.srcObject = stream;
+// 	video.addEventListener('loadedmetadata', () => {
+// 		video.play();
+// 	})
+// 	vidgrid.append(video)
+
+// } // a func to add a vid stream
 
 
-function muteToggle() {
-	const enabled = myvidS.getAudioTracks()[0].enabled;
-	if (enabled) {
-		myvidS.getAudioTracks()[0].enabled = false;
-		setUnmuteButton();
-	} else {
-		setMuteButton();
-		myvidS.getAudioTracks()[0].enabled = true;
-	}
-}
+// function muteToggle() {
+// 	const enabled = myvidS.getAudioTracks()[0].enabled;
+// 	if (enabled) {
+// 		myvidS.getAudioTracks()[0].enabled = false;
+// 		setUnmuteButton();
+// 	} else {
+// 		setMuteButton();
+// 		myvidS.getAudioTracks()[0].enabled = true;
+// 	}
+// }
 
-function speakerToggle() {
-	console.log('object')
-	let enabled = myvidS.getVideoTracks()[0].enabled;
-	if (enabled) {
-		myvidS.getVideoTracks()[0].enabled = false;
-		setPlayVideo()
-	} else {
-		setStopVideo()
-		myvidS.getVideoTracks()[0].enabled = true;
-	}
-}
-const setMuteButton = () => {
-	const html = `
-    <i class="fas fa-microphone"></i>
-    <span>Mute</span> `
-	document.querySelector('.main_mute_button').innerHTML = html;
-}
+// function speakerToggle() {
+// 	console.log('object')
+// 	let enabled = myvidS.getVideoTracks()[0].enabled;
+// 	if (enabled) {
+// 		myvidS.getVideoTracks()[0].enabled = false;
+// 		setPlayVideo()
+// 	} else {
+// 		setStopVideo()
+// 		myvidS.getVideoTracks()[0].enabled = true;
+// 	}
+// }
+// const setMuteButton = () => {
+// 	const html = `
+//     <i class="fas fa-microphone"></i>
+//     <span>Mute</span> `
+// 	document.querySelector('.main_mute_button').innerHTML = html;
+// }
 
-const setUnmuteButton = () => {
-	const html = `
-    <i class="unmute fas fa-microphone-slash"></i>
-    <span>Unmute</span> `
-	document.querySelector('.main_mute_button').innerHTML = html;
-}
+// const setUnmuteButton = () => {
+// 	const html = `
+//     <i class="unmute fas fa-microphone-slash"></i>
+//     <span>Unmute</span> `
+// 	document.querySelector('.main_mute_button').innerHTML = html;
+// }
 
-const setStopVideo = () => {
-	const html = `
-    <i class="fas fa-video"></i>
-    <span>Stop Video</span> `
-	document.querySelector('.main_video_button').innerHTML = html;
-}
+// const setStopVideo = () => {
+// 	const html = `
+//     <i class="fas fa-video"></i>
+//     <span>Stop Video</span> `
+// 	document.querySelector('.main_video_button').innerHTML = html;
+// }
 
-const setPlayVideo = () => {
-	const html = `
-  <i class="stop fas fa-video-slash"></i>
-    <span>Play Video</span>
-  `
-	document.querySelector('.main_video_button').innerHTML = html;
-}
+// const setPlayVideo = () => {
+// 	const html = `
+//   <i class="stop fas fa-video-slash"></i>
+//     <span>Play Video</span>
+//   `
+// 	document.querySelector('.main_video_button').innerHTML = html;
+// }
