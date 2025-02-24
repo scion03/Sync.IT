@@ -72,53 +72,53 @@ socket.on("enter room", (isAllowed) => {
 	else window.location.href = "/";
 });
 
-//audio
-// let streamObj;
-// let audioTracks = [];
-// navigator.mediaDevices
-// 	.getUserMedia({
-// 		audio: true,
-// 	})
-// 	.then((stream) => {
-// 		streamObj = stream;
-// 		peer.on("call", (call) => {
-// 		call.answer(stream);
-// 		const newAudio = document.createElement("audio");
-// 		call.on("stream", (userAudioStream) => {
-// 			addAudioStream(newAudio, userAudioStream);
-// 		});
-// 	});
+audio
+let streamObj;
+let audioTracks = [];
+navigator.mediaDevices
+	.getUserMedia({
+		audio: true,
+	})
+	.then((stream) => {
+		streamObj = stream;
+		peer.on("call", (call) => {
+		call.answer(stream);
+		const newAudio = document.createElement("audio");
+		call.on("stream", (userAudioStream) => {
+			addAudioStream(newAudio, userAudioStream);
+		});
+	});
 
-// 	//Notification on new user entry and add audio stream
-// 	socket.on("new user", (username, peerId) => {
-// 		// notifJoin.play();
-// 		toastUserAddRemove(username, "joined");
-// 		console.log(peerId);
-// 		connectToNewUser(peerId, stream);
-// 	});
-// });
+	//Notification on new user entry and add audio stream
+	socket.on("new user", (username, peerId) => {
+		// notifJoin.play();
+		toastUserAddRemove(username, "joined");
+		console.log(peerId);
+		connectToNewUser(peerId, stream);
+	});
+});
 
-// function connectToNewUser(userId, stream) {
-// 	const call = peer.call(userId, stream);
-// 	const audio = document.createElement("audio");
-// 	call.on("stream", (userAudioStream) => {
-// 		addAudioStream(audio, userAudioStream);
-// 	});
-// 	call.on("close", () => {
-// 		audio.remove();
-// 	});
+function connectToNewUser(userId, stream) {
+	const call = peer.call(userId, stream);
+	const audio = document.createElement("audio");
+	call.on("stream", (userAudioStream) => {
+		addAudioStream(audio, userAudioStream);
+	});
+	call.on("close", () => {
+		audio.remove();
+	});
 
-// 	peers[userId] = call;
-// }
+	peers[userId] = call;
+}
 
-// function addAudioStream(audio, stream) {
-// 	audio.srcObject = stream;
-// 	audio.addEventListener("loadedmetadata", () => {
-// 		audio.play();
-// 		audio.muted = !isSpeakerOn;
-// 	});
-// 	audioTracks.push(audio);
-// }
+function addAudioStream(audio, stream) {
+	audio.srcObject = stream;
+	audio.addEventListener("loadedmetadata", () => {
+		audio.play();
+		audio.muted = !isSpeakerOn;
+	});
+	audioTracks.push(audio);
+}
 
 
 
