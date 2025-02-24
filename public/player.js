@@ -4,7 +4,7 @@ var peer = new Peer(undefined, {
 	host: '/',
 	port: '443'
 });
-
+//Just a Dummy commit
 // const notifChat = document.getElementById("notif_chat");
 // const notifJoin = document.getElementById("notif_join");
 // const notifPermission = document.getElementById("notif_permission");
